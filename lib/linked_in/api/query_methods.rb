@@ -2,6 +2,7 @@ module LinkedIn
   module Api
 
     module QueryMethods
+      PARAMETERS = %w{start count modified modified-since}
 
       def profile(options={})
         path = person_path(options)
@@ -27,6 +28,10 @@ module LinkedIn
             path += ":public"
           elsif fields
             path += field_selector(fields)
+          end 
+          
+          PARAMETERS.each do |param|
+            path += "?#{param}=#{options[param.to_sym]}" if options[param.to_sym]
           end
 
           Mash.from_json(get(path))
